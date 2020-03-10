@@ -26,6 +26,6 @@ public class UserController {
   @GetMapping("/userList")
   public String printUserList(Model model){
     model.addAttribute("userList", userRepository.findAll());
-    return "printUserList";
+    return "/user/userList";
   }
 }
