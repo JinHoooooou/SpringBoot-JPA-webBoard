@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class WelcomeController {
+
   @GetMapping("/hello")
-  public String helloWorldPage(String userName, int userAge, Model model){
-    System.out.println("userName : " + userName + " and userAge : " + userAge);
-    model.addAttribute("userName", userName);
-    model.addAttribute("userAge", userAge);
+  public String helloWorldPage(Model model) {
+    model.addAttribute("name", "Chris");
+    model.addAttribute("value", 10000);
+    model.addAttribute("taxed_value", 10000 - (10000 * 0.4));
+    model.addAttribute("in_ca", true);
     return "welcome";
   }
 
