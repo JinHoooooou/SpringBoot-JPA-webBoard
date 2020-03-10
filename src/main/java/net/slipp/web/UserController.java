@@ -1,7 +1,5 @@
 package net.slipp.web;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.slipp.domain.User;
 import net.slipp.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
