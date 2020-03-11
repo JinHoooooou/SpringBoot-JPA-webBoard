@@ -16,6 +16,11 @@ public class UserController {
   @Autowired
   UserRepository userRepository;
 
+  @GetMapping("signUp")
+  public String goToSignUpPage() {
+    return "/user/signUpForm";
+  }
+
   @PostMapping("")
   public String signUpUser(User user, Model model){
     System.out.println(user);
