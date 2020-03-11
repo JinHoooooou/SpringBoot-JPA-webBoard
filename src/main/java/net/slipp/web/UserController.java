@@ -18,7 +18,7 @@ public class UserController {
   UserRepository userRepository;
 
   @GetMapping("signUp")
-  public String goToSignUpPage() {
+  public String goToSignUpFormPage() {
     return "/user/signUpForm";
   }
 
@@ -26,6 +26,12 @@ public class UserController {
   public String goToUpdateFormPage(@PathVariable Long id, Model model) {
     model.addAttribute("user", userRepository.findById(id).get());
     return "/user/updateForm";
+  }
+
+  @GetMapping("")
+  public String goToPrintUserListPage(Model model){
+    model.addAttribute("userList", userRepository.findAll());
+    return "/user/userList";
   }
 
   @PostMapping("")
@@ -39,11 +45,5 @@ public class UserController {
   public String updateUser(@PathVariable Long id, User updateUser) {
     userRepository.save(updateUser);
     return "redirect:/users";
-  }
-
-  @GetMapping("")
-  public String printUserList(Model model){
-    model.addAttribute("userList", userRepository.findAll());
-    return "/user/userList";
   }
 }
