@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -41,7 +42,7 @@ public class UserController {
     return "redirect:/users";
   }
 
-  @PostMapping("{id}/update")
+  @PutMapping("{id}/update")
   public String updateUser(@PathVariable Long id, User updateUser) {
     userRepository.save(updateUser);
     return "redirect:/users";
