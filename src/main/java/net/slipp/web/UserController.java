@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("users")
 public class UserController {
 
   @Autowired
@@ -20,19 +20,19 @@ public class UserController {
 
   @GetMapping("signUp")
   public String goToSignUpFormPage() {
-    return "/user/signUpForm";
+    return "user/signUpForm";
   }
 
   @GetMapping("{id}/update")
   public String goToUpdateFormPage(@PathVariable Long id, Model model) {
     model.addAttribute("user", userRepository.findById(id).get());
-    return "/user/updateForm";
+    return "user/updateForm";
   }
 
   @GetMapping("")
   public String goToPrintUserListPage(Model model){
     model.addAttribute("userList", userRepository.findAll());
-    return "/user/userList";
+    return "user/userList";
   }
 
   @PostMapping("")
