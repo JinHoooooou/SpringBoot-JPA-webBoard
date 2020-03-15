@@ -1,5 +1,6 @@
 package net.slipp.web;
 
+import javax.servlet.http.HttpSession;
 import net.slipp.domain.User;
 import net.slipp.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,22 @@ public class UserController {
   public String updateUser(@PathVariable Long id, User updateUser) {
     userRepository.save(updateUser);
     return "redirect:/users";
+  }
+
+  @PostMapping("/login")
+  public String checkLogin(String userId, String userPassword, HttpSession session) {
+    User toCheckUser = userRepository.findByUserId(userId);
+    if(toCheckUser==null){
+      System.out.println("Login Failure : ID");
+      return "redirect:/users/loginForm";
+    }
+    if(!userPassword.equals(toCheckUser.getUserPassword())){
+      System.out.println("Login Failure : Password");
+      return "redirect:/users/loginForm";
+    }
+
+    System.out.println("Login Success");
+    session.setAttribute("completeUserLogin", toCheckUser);
+    return "redirect:/";
   }
 }
