@@ -70,4 +70,10 @@ public class UserController {
     session.setAttribute("completeUserLogin", toCheckUser);
     return "redirect:/";
   }
+
+  @GetMapping("/logout")
+  public String logout(HttpSession session) {
+    session.removeAttribute("completeUserLogin");
+    return "redirect:/users/loginForm";
+  }
 }
