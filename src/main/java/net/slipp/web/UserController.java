@@ -35,6 +35,11 @@ public class UserController {
     return "user/userList";
   }
 
+  @GetMapping("loginForm")
+  public String goToLoginFormPage() {
+    return "user/loginForm";
+  }
+
   @PostMapping("")
   public String signUpUser(User user, Model model){
     System.out.println(user);
