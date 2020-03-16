@@ -25,13 +25,22 @@ public class UserController {
   }
 
   @GetMapping("{id}/update")
-  public String goToUpdateFormPage(@PathVariable Long id, Model model) {
+  public String goToUpdateFormPage(@PathVariable Long id, Model model, HttpSession session) {
+    User sessionUser = (User) session.getAttribute("completeUserLogin");
+    if (sessionUser == null) {
+      System.out.println("Fail about go to update form page : Login failure");
+      throw new IllegalStateException("로그인 하세요");
+    }
+    if (!id.equals(sessionUser.getId())) {
+      System.out.println("Fail about go to update form page : only your own id");
+      throw new IllegalStateException("본인 아이디만 수정 가능");
+    }
     model.addAttribute("user", userRepository.findById(id).get());
     return "user/updateForm";
   }
 
   @GetMapping("")
-  public String goToPrintUserListPage(Model model){
+  public String goToPrintUserListPage(Model model) {
     model.addAttribute("userList", userRepository.findAll());
     return "user/userList";
   }
@@ -42,14 +51,23 @@ public class UserController {
   }
 
   @PostMapping("")
-  public String signUpUser(User user, Model model){
+  public String signUpUser(User user, Model model) {
     System.out.println(user);
     userRepository.save(user);
     return "redirect:/users";
   }
 
   @PutMapping("{id}/update")
-  public String updateUser(@PathVariable Long id, User updateUser) {
+  public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
+    User sessionUser = (User) session.getAttribute("completeUserLogin");
+    if (sessionUser == null) {
+      System.out.println("Fail about go to update form page : Login failure");
+      throw new IllegalStateException("로그인 하세요");
+    }
+    if (!id.equals(sessionUser.getId())) {
+      System.out.println("Fail about go to update form page : only your own id");
+      throw new IllegalStateException("본인 아이디만 수정 가능");
+    }
     userRepository.save(updateUser);
     return "redirect:/users";
   }
@@ -57,11 +75,11 @@ public class UserController {
   @PostMapping("/login")
   public String checkLogin(String userId, String userPassword, HttpSession session) {
     User toCheckUser = userRepository.findByUserId(userId);
-    if(toCheckUser==null){
+    if (toCheckUser == null) {
       System.out.println("Login Failure : ID");
       return "redirect:/users/loginForm";
     }
-    if(!userPassword.equals(toCheckUser.getUserPassword())){
+    if (!userPassword.equals(toCheckUser.getUserPassword())) {
       System.out.println("Login Failure : Password");
       return "redirect:/users/loginForm";
     }
