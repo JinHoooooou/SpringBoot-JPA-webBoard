@@ -26,7 +26,7 @@ public class UserController {
 
   @GetMapping("{id}/update")
   public String goToUpdateFormPage(@PathVariable Long id, Model model, HttpSession session) {
-    User sessionUser = (User) session.getAttribute("completeUserLogin");
+    User sessionUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
     if (sessionUser == null) {
       System.out.println("Fail about go to update form page : Login failure");
       throw new IllegalStateException("로그인 하세요");
@@ -59,7 +59,7 @@ public class UserController {
 
   @PutMapping("{id}/update")
   public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
-    User sessionUser = (User) session.getAttribute("completeUserLogin");
+    User sessionUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
     if (sessionUser == null) {
       System.out.println("Fail about go to update form page : Login failure");
       throw new IllegalStateException("로그인 하세요");
@@ -85,13 +85,13 @@ public class UserController {
     }
 
     System.out.println("Login Success");
-    session.setAttribute("completeUserLogin", toCheckUser);
+    session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, toCheckUser);
     return "redirect:/";
   }
 
   @GetMapping("/logout")
   public String logout(HttpSession session) {
-    session.removeAttribute("completeUserLogin");
+    session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
     return "redirect:/users/loginForm";
   }
 }
