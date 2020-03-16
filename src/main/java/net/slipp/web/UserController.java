@@ -26,15 +26,17 @@ public class UserController {
 
   @GetMapping("{id}/update")
   public String goToUpdateFormPage(@PathVariable Long id, Model model, HttpSession session) {
-    User sessionUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-    if (sessionUser == null) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
       System.out.println("Fail about go to update form page : Login failure");
       throw new IllegalStateException("로그인 하세요");
     }
-    if (!id.equals(sessionUser.getId())) {
+    User sessionUser = HttpSessionUtils.getUserFromSession(session);
+
+    if (!sessionUser.isCorrectId(id)) {
       System.out.println("Fail about go to update form page : only your own id");
       throw new IllegalStateException("본인 아이디만 수정 가능");
     }
+
     model.addAttribute("user", userRepository.findById(id).get());
     return "user/updateForm";
   }
@@ -59,15 +61,17 @@ public class UserController {
 
   @PutMapping("{id}/update")
   public String updateUser(@PathVariable Long id, User updateUser, HttpSession session) {
-    User sessionUser = (User) session.getAttribute(HttpSessionUtils.USER_SESSION_KEY);
-    if (sessionUser == null) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
       System.out.println("Fail about go to update form page : Login failure");
       throw new IllegalStateException("로그인 하세요");
     }
-    if (!id.equals(sessionUser.getId())) {
+    User sessionUser = HttpSessionUtils.getUserFromSession(session);
+
+    if (!sessionUser.isCorrectId(id)) {
       System.out.println("Fail about go to update form page : only your own id");
       throw new IllegalStateException("본인 아이디만 수정 가능");
     }
+
     userRepository.save(updateUser);
     return "redirect:/users";
   }
@@ -79,7 +83,7 @@ public class UserController {
       System.out.println("Login Failure : ID");
       return "redirect:/users/loginForm";
     }
-    if (!userPassword.equals(toCheckUser.getUserPassword())) {
+    if (!toCheckUser.isCorrectPassword(userPassword)) {
       System.out.println("Login Failure : Password");
       return "redirect:/users/loginForm";
     }

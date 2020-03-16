@@ -23,4 +23,16 @@ public class User {
   private String userPassword;
   private String userName;
   private String userEmail;
+
+  public boolean isCorrectId(Long id) {
+    if(id == null) {
+      return false;
+    }
+
+    return id.equals(this.id);
+  }
+
+  public boolean isCorrectPassword(String userPassword) {
+    return userPassword.equals(this.userPassword);
+  }
 }
