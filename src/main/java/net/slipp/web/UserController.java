@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @GetMapping("signUp")
   public String goToSignUpFormPage() {
