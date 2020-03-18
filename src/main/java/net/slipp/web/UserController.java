@@ -76,7 +76,7 @@ public class UserController {
     return "redirect:/users";
   }
 
-  @PostMapping("/login")
+  @PostMapping("login")
   public String checkLogin(String userId, String userPassword, HttpSession session) {
     User toCheckUser = userRepository.findByUserId(userId);
     if (toCheckUser == null) {
