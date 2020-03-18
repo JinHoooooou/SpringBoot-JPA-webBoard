@@ -93,7 +93,7 @@ public class UserController {
     return "redirect:/";
   }
 
-  @GetMapping("/logout")
+  @GetMapping("logout")
   public String logout(HttpSession session) {
     session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
     return "redirect:/users/loginForm";
