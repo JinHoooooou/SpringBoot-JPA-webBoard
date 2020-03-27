@@ -1,5 +1,7 @@
 package net.slipp.domain;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class Question {
 
   private String title;
   private String contents;
+  private String createDate;
 
 
   public Question() {
@@ -37,5 +40,7 @@ public class Question {
     this.title = title;
     this.contents = contents;
     this.writer = writer;
+    this.createDate = LocalDateTime.now()
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   }
 }
