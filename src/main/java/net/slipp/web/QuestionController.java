@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/questions")
 public class QuestionController {
+
   @Autowired
   private QuestionRepository questionRepository;
 
@@ -32,7 +33,7 @@ public class QuestionController {
       throw new IllegalStateException("로그인 하세요");
     }
     User sessionUser = HttpSessionUtils.getUserFromSession(session);
-    Question createdQuestion = new Question(title, contents, sessionUser.getUserId());
+    Question createdQuestion = new Question(sessionUser, title, contents);
     questionRepository.save(createdQuestion);
 
     return "redirect:/";

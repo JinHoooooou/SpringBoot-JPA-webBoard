@@ -1,9 +1,12 @@
 package net.slipp.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,14 +21,18 @@ public class Question {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
+  private User writer;
+
   private String title;
   private String contents;
-  private String writer;
+
 
   public Question() {
   }
 
-  public Question(String title, String contents, String writer) {
+  public Question(User writer, String title, String contents) {
     super();
     this.title = title;
     this.contents = contents;
