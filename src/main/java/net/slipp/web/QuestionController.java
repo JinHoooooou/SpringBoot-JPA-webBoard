@@ -6,7 +6,9 @@ import net.slipp.domain.QuestionRepository;
 import net.slipp.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -24,6 +26,12 @@ public class QuestionController {
       throw new IllegalStateException("로그인 하세요");
     }
     return "qna/questionForm";
+  }
+
+  @GetMapping("{id}")
+  public String goToReadingQuestionPage(@PathVariable Long id, Model model) {
+    model.addAttribute("question", questionRepository.findById(id).get());
+    return "qna/show";
   }
 
   @PostMapping("")
