@@ -19,7 +19,7 @@ public class QuestionController {
   @Autowired
   private QuestionRepository questionRepository;
 
-  @GetMapping("questionForm")
+  @GetMapping("createQuestion")
   public String goToQuestionFormPage(HttpSession session) {
     if (!HttpSessionUtils.isLoginUser(session)) {
       System.out.println("Fail about go to update form page : Login failure");
