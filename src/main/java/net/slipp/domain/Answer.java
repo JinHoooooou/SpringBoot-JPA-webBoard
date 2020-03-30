@@ -2,7 +2,6 @@ package net.slipp.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -21,7 +20,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Question {
+public class Answer {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,37 +30,25 @@ public class Question {
   @JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
   private User writer;
 
-  @OneToMany(mappedBy = "question")
-  @OrderBy("id ASC")
-  private List<Answer> answers;
+  @ManyToOne
+  @JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_to_question"))
+  private Question question;
 
-  private String title;
   @Lob
   private String contents;
   private LocalDateTime createDate;
 
-
-  public Question() {
+  public Answer() {
   }
 
-  public Question(User writer, String title, String contents) {
-    super();
-    this.title = title;
-    this.contents = contents;
+  public Answer(User writer, Question question, String contents) {
     this.writer = writer;
+    this.question = question;
+    this.contents = contents;
     this.createDate = LocalDateTime.now();
   }
 
   private String getFormattedCreateDate() {
     return createDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-  }
-
-  public void update(String title, String contents) {
-    this.title = title;
-    this.contents = contents;
-  }
-
-  public boolean isSameWriter(User loginUser) {
-    return this.writer.isSameWriter(loginUser);
   }
 }
