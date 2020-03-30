@@ -35,4 +35,8 @@ public class User {
   public boolean isCorrectPassword(String userPassword) {
     return userPassword.equals(this.userPassword);
   }
+
+  public boolean isSameWriter(User loginUser) {
+    return this.id.equals(loginUser.id);
+  }
 }

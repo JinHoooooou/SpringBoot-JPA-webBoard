@@ -37,8 +37,17 @@ public class QuestionController {
   }
 
   @GetMapping("{id}/update")
-  public String goToUpdateQuestionFormPage(@PathVariable Long id, Model model) {
-    model.addAttribute("question", questionRepository.findById(id).get());
+  public String goToUpdateQuestionFormPage(@PathVariable Long id, Model model,
+      HttpSession session) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      throw new IllegalStateException("로그인 하세요");
+    }
+    User loginUser = HttpSessionUtils.getUserFromSession(session);
+    Question question = questionRepository.getOne(id);
+    if (!question.isSameWriter(loginUser)) {
+      throw new IllegalStateException("본인이 쓴 글만 수정 할 수 있습니다.");
+    }
+    model.addAttribute("question", questionRepository.getOne(id));
     return "qna/updateQuestionForm";
   }
 
@@ -56,15 +65,31 @@ public class QuestionController {
   }
 
   @PutMapping("{id}")
-  public String updateQuestion(@PathVariable Long id, String title, String contents) {
-    Question question = questionRepository.findById(id).get();
+  public String updateQuestion(@PathVariable Long id, String title, String contents,
+      HttpSession session) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      throw new IllegalStateException("로그인 하세요");
+    }
+    User loginUser = HttpSessionUtils.getUserFromSession(session);
+    Question question = questionRepository.getOne(id);
+    if (!question.isSameWriter(loginUser)) {
+      throw new IllegalStateException("본인이 쓴 글만 수정 할 수 있습니다.");
+    }
     question.update(title, contents);
     questionRepository.save(question);
     return String.format("redirect:/questions/%d", id);
   }
 
   @DeleteMapping("{id}")
-  public String deleteQuestion(@PathVariable Long id) {
+  public String deleteQuestion(@PathVariable Long id, HttpSession session) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      throw new IllegalStateException("로그인 하세요");
+    }
+    User loginUser = HttpSessionUtils.getUserFromSession(session);
+    Question question = questionRepository.getOne(id);
+    if(!question.isSameWriter(loginUser)) {
+      throw new IllegalStateException("본인이 쓴 글만 삭제 할 수 있습니다.");
+    }
     questionRepository.deleteById(id);
     return "redirect:/";
   }

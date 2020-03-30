@@ -29,7 +29,7 @@ public class Question {
 
   private String title;
   private String contents;
-  private String createDate;
+  private LocalDateTime createDate;
 
 
   public Question() {
@@ -40,12 +40,15 @@ public class Question {
     this.title = title;
     this.contents = contents;
     this.writer = writer;
-    this.createDate = LocalDateTime.now()
-        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    this.createDate = LocalDateTime.now();
   }
 
   public void update(String title, String contents) {
     this.title = title;
     this.contents = contents;
+  }
+
+  public boolean isSameWriter(User loginUser) {
+    return this.writer.isSameWriter(loginUser);
   }
 }
