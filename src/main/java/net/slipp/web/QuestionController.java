@@ -3,6 +3,7 @@ package net.slipp.web;
 import javax.servlet.http.HttpSession;
 import net.slipp.domain.Question;
 import net.slipp.domain.QuestionRepository;
+import net.slipp.domain.Result;
 import net.slipp.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,16 +40,25 @@ public class QuestionController {
   @GetMapping("{id}/update")
   public String goToUpdateQuestionFormPage(@PathVariable Long id, Model model,
       HttpSession session) {
-    if (!HttpSessionUtils.isLoginUser(session)) {
-      throw new IllegalStateException("로그인 하세요");
+    Question question = questionRepository.getOne(id);
+    Result result = valid(session, question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "index";
+    }
+    model.addAttribute("question", question);
+    return "qna/updateQuestionForm";
+  }
+
+  private Result valid(HttpSession session, Question question) {
+    if (!HttpSessionUtils.isLoginUser((session))) {
+      return Result.fail("로그인 하세요");
     }
     User loginUser = HttpSessionUtils.getUserFromSession(session);
-    Question question = questionRepository.getOne(id);
     if (!question.isSameWriter(loginUser)) {
-      throw new IllegalStateException("본인이 쓴 글만 수정 할 수 있습니다.");
+      return Result.fail("본인 글만 수정, 삭제할 수 있습니다.");
     }
-    model.addAttribute("question", questionRepository.getOne(id));
-    return "qna/updateQuestionForm";
+    return Result.ok();
   }
 
   @PostMapping("")
@@ -65,15 +75,13 @@ public class QuestionController {
   }
 
   @PutMapping("{id}")
-  public String updateQuestion(@PathVariable Long id, String title, String contents,
+  public String updateQuestion(@PathVariable Long id, String title, String contents, Model model,
       HttpSession session) {
-    if (!HttpSessionUtils.isLoginUser(session)) {
-      throw new IllegalStateException("로그인 하세요");
-    }
-    User loginUser = HttpSessionUtils.getUserFromSession(session);
     Question question = questionRepository.getOne(id);
-    if (!question.isSameWriter(loginUser)) {
-      throw new IllegalStateException("본인이 쓴 글만 수정 할 수 있습니다.");
+    Result result = valid(session, question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "index";
     }
     question.update(title, contents);
     questionRepository.save(question);
@@ -81,15 +89,14 @@ public class QuestionController {
   }
 
   @DeleteMapping("{id}")
-  public String deleteQuestion(@PathVariable Long id, HttpSession session) {
-    if (!HttpSessionUtils.isLoginUser(session)) {
-      throw new IllegalStateException("로그인 하세요");
-    }
-    User loginUser = HttpSessionUtils.getUserFromSession(session);
+  public String deleteQuestion(@PathVariable Long id, Model model, HttpSession session) {
     Question question = questionRepository.getOne(id);
-    if(!question.isSameWriter(loginUser)) {
-      throw new IllegalStateException("본인이 쓴 글만 삭제 할 수 있습니다.");
+    Result result = valid(session, question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "index";
     }
+
     questionRepository.deleteById(id);
     return "redirect:/";
   }
